@@ -1,0 +1,31 @@
+{
+  "name": "find-requires",
+  "version": "0.0.0",
+  "description": "Search files for require() calls",
+  "main": "index.js",
+  "bin": {
+    "find-requires": "bin/find-requires.js"
+  },
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/parshap/node-find-requires"
+  },
+  "keywords": [
+    "find",
+    "require",
+    "dependencies"
+  ],
+  "author": "Parsha Pourkhomami",
+  "license": "Public Domain",
+  "bugs": {
+    "url": "https://github.com/parshap/node-find-requires/issues"
+  },
+  "homepage": "https://github.com/parshap/node-find-requires",
+  "dependencies": {
+    "async": "^0.9.0",
+    "detective": "^3.1.0"
+  }
+}
