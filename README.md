@@ -3,10 +3,11 @@
 Find where you `require()` a module.
 
 *search-requires* searches the named input files for `require()` calls
-to the given module. Both global modules and local file modules can be
-searched for, and relative paths are automatically handled. Require
-calls are followed, meaning if `a.js` is searched and `a.js` requires
-`b.js`, then `b.js` is also searched.
+to the target module. The target module can be a module name (e.g.,
+`some-module`) or a local file (e.g., `./some-module.js`. Relative paths
+are resolved automatically. Require calls to local files are followed,
+meaning if `a.js` is searched and `a.js` requires `b.js`, then `b.js` is
+also searched.
 
 ### Command Line Usage
 
@@ -16,6 +17,21 @@ SYNOPSIS
 
 EXAMPLES
       search-requires some-module ./a.js
+```
+
+See which node core modules use the `stream` module:
+
+```
+$ search-requires.js stream /src/node/lib/*.js
+/src/node/lib/crypto.js
+/src/node/lib/fs.js
+/src/node/lib/_http_incoming.js
+/src/node/lib/_http_outgoing.js
+/src/node/lib/net.js
+/src/node/lib/repl.js
+/src/node/lib/_stream_readable.js
+/src/node/lib/_stream_writable.js
+/src/node/lib/_tls_legacy.js
 ```
 
 ### API Usage
@@ -32,27 +48,29 @@ finder.on("data", function(obj) {
 ## API
 
 ```js
-var find = require("search-requires");
+var search = require("search-requires");
 ```
 
-### `var finder = find(module, files)`
+### `search(module, files)`
 
-Create a finder stream, emitting data objects each time a
-`require()` call is found for the given *module*.
+Return a stream object and start searching `files` for require calls
+to `module`, emitting a data object for each matching call
+found.
 
-*module* should be the path to a module or the name of a module.
+`module` should be either a module name (e.g, `"some-module"`) or the
+path to a local file (e.g., `"./some-module.js"`).
 
-*files* should be a entry point to start the search or an array of
-paths.
+`files` should be a file path or an array of file paths that will be
+used as entry points for the search.
 
-Data objects will have the following properties:
+The stream's data objects will have the following properties:
 
  * `sourcePath`: The path of the file with the matching `require()` call
  * `module`: The name of the module
 
 An `error` event will be fired if an error occurs while searching files.
 
-An `end` event will be fired once all files have been searched.`
+An `end` event will be fired once all files have been searched.
 
 ## Installation
 
@@ -69,3 +87,5 @@ npm install search-requires
    --follow-all, --follow-files, --follow-globals)
  * Option to be silent about MODULE_NOT_FOUND errors
  * Use local directory if no input file
+ * Command line help / usage
+ * Improve tests
