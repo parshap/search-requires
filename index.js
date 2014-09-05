@@ -1,6 +1,7 @@
 "use strict";
 
 var detective = require("detective");
+var resolve = require("resolve");
 var readFile = require("fs").readFile;
 var path = require("path");
 var through = require("through");
@@ -18,6 +19,9 @@ var createMapStream = require("map-stream-limit");
 // File Path -> File Source -> Require Call -> (Searcher, Emitter)
 
 module.exports = function(modules, files) {
+  modules = getSearchModules(modules);
+  files = getEntryFiles(files);
+
   var retval = through();
   var fileStream = retval.fileStream = createFileStream();
   var detective = retval.detective = createDetectiveStream();
@@ -69,12 +73,27 @@ function getEntryFiles(files) {
 }
 
 function getSearchModules(modules) {
-  return ensureArray(modules);
+  modules = ensureArray(modules);
+  return modules.map(resolveSearchModule);
+}
+
+function resolveSearchModule(module) {
+  // If it is a file module (e.g., starts with "./"), then resolve the absolute
+  // path
+  if (isFileModule(module)) {
+    return path.resolve(process.cwd(), module);
+  }
+  // If the module is a path to a valid file, resolve the absolute path
+  try {
+    return resolve.sync("./" + module, { basedir: process.cwd() });
+  }
+  // Otherwise, treat it as a global module)
+  catch (err) {
+    return module;
+  }
 }
 
 function isRequireMatch(req, modules) {
-  modules = getSearchModules(modules);
-
   if (isFileModule(req.module)) {
     var modulePath;
     try {
