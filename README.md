@@ -22,7 +22,7 @@ EXAMPLES
 See which node core modules use the `stream` module:
 
 ```
-$ search-requires.js stream /src/node/lib/*.js
+$ search-requires stream /src/node/lib/*.js
 /src/node/lib/crypto.js
 /src/node/lib/fs.js
 /src/node/lib/_http_incoming.js
