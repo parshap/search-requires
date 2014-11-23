@@ -35,7 +35,7 @@ module.exports = function(modules, files) {
   fileStream.on("drain", fileStream.end.bind(fileStream));
 
   // Start searching entry files
-  getEntryFiles(files).forEach(function(file) {
+  files.forEach(function(file) {
     fileStream.write(file);
   });
 
