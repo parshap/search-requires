@@ -89,3 +89,5 @@ npm install search-requires
  * Use local directory if no input file
  * Command line help / usage
  * Improve tests
+ * Add option to explicitly search for file module or global module
+   (e.g., --module auto-detects, --file-module, --global-module)
