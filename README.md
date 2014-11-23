@@ -13,16 +13,20 @@ also searched.
 
 ```
 SYNOPSIS
-      search-requires [OPTIONS] MODULE [FILE...]
+      search-requires [OPTIONS] [FILE...]
+
+OPTIONS
+      -m MODULE, --module MODULE
+            Search for require() calls to MODULE.
 
 EXAMPLES
-      search-requires some-module ./a.js
+      search-requires -m some-module ./a.js
 ```
 
 See which node core modules use the `stream` module:
 
 ```
-$ search-requires stream /src/node/lib/*.js
+$ search-requires -m stream /src/node/lib/*.js
 /src/node/lib/crypto.js
 /src/node/lib/fs.js
 /src/node/lib/_http_incoming.js
@@ -80,8 +84,6 @@ npm install search-requires
 
 ## Todos
 
- * Allow searching multiple modules at the same time (`search-requires
-   some-module other-module -- ./index.js`)
  * Show context around require call (scriptie-talkie?, grep -l option?)
  * Options to configure `require()` following (--no-follow,
    --follow-all, --follow-files, --follow-globals)

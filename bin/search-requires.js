@@ -2,9 +2,14 @@
 "use strict";
 
 var find = require("../");
-var argv = process.argv;
-var moduleToFind = argv[2];
-var entryPaths = argv.slice(3);
+var argv = require("minimist")(process.argv.slice(2), {
+  alias: {
+    module: ["m"],
+  },
+});
+
+var moduleToFind = argv.module;
+var entryPaths = argv._;
 
 var finder = find(moduleToFind, entryPaths);
 finder.on("error", function(err) {
