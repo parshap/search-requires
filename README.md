@@ -25,6 +25,7 @@ OPTIONS
 
 EXAMPLES
       search-requires -m some-module ./a.js
+      search-requires -m fs -m ./helper.js ./a.js
 ```
 
 See which node core modules use the `stream` module:
