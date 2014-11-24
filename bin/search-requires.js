@@ -36,10 +36,7 @@ if (isOptionEmpty(moduleToFind)) {
 }
 
 if (isOptionEmpty(entryPaths)) {
-  console.error("An entry file must be given.");
-  console.error();
-  readUsage().pipe(process.stderr);
-  return;
+  entryPaths = process.cwd();
 }
 
 var finder = find(moduleToFind, entryPaths);

@@ -22,6 +22,14 @@ module.exports = function(modules, files) {
   modules = getSearchModules(modules);
   files = getEntryFiles(files);
 
+  if ( ! modules.length) {
+    throw new Error("A target search module must be given.");
+  }
+
+  if ( ! files.length) {
+    throw new Error("An entry point file must be given.");
+  }
+
   var retval = through();
   var fileStream = retval.fileStream = createFileStream();
   var detective = retval.detective = createDetectiveStream();
@@ -69,12 +77,19 @@ module.exports = function(modules, files) {
 };
 
 function getEntryFiles(files) {
-  return ensureArray(files);
+  return ensureArray(files)
+    .map(resolveEntryFiles)
+    .filter(Boolean);
+}
+
+function resolveEntryFiles(path) {
+  return resolve.sync(path, { basedir: process.cwd() });
 }
 
 function getSearchModules(modules) {
-  modules = ensureArray(modules);
-  return modules.map(resolveSearchModule);
+  return ensureArray(modules)
+    .map(resolveSearchModule)
+    .filter(Boolean);
 }
 
 function resolveSearchModule(module) {

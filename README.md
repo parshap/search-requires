@@ -2,18 +2,19 @@
 
 Find where you `require()` a module.
 
-*search-requires* searches the named input files for `require()` calls
-to the target module. The target module can be a module name (e.g.,
-`some-module`) or a local file (e.g., `./some-module.js`. Relative paths
-are resolved automatically. Require calls to local files are followed,
-meaning if `a.js` is searched and `a.js` requires `b.js`, then `b.js` is
-also searched.
-
 ### Command Line Usage
 
 ```
 SYNOPSIS
-      search-requires [OPTIONS] [FILE...]
+      search-requires [OPTIONS] [ENTRY...]
+
+DESCRIPTION
+      search-requires searches the name ENTRY paths for require() calls
+      matching the target search modules. If an entry path is not given,
+      the path to the current directory will be used.
+
+      When a require() call is encountered, the path required will also
+      be search if it is a path to a local file module.
 
 OPTIONS
 
@@ -60,17 +61,18 @@ finder.on("data", function(obj) {
 var search = require("search-requires");
 ```
 
-### `search(module, files)`
+### `search(modules, entry)`
 
-Return a stream object and start searching `files` for require calls
-to `module`, emitting a data object for each matching call
-found.
+Return a stream object and start searching `paths` for require calls
+to `modules`, emitting a data object for each matching call found.
 
-`module` should be either a module name (e.g, `"some-module"`) or the
+`modules` should be either a module name (e.g, `"some-module"`) or the
 path to a local file (e.g., `"./some-module.js"`).
 
-`files` should be a file path or an array of file paths that will be
-used as entry points for the search.
+`entry` should be a path or an array of paths to use as entry points for
+the search. If a path to a directory is used, it will be resolved to a
+path using `require.resolve` semantics using the current working
+directory.
 
 The stream's data objects will have the following properties:
 
@@ -93,7 +95,6 @@ npm install search-requires
  * Options to configure `require()` following (--no-follow,
    --follow-all, --follow-files, --follow-globals)
  * Option to be silent about MODULE_NOT_FOUND errors
- * Use local directory if no input file
  * Improve tests
  * Add option to explicitly search for file module or global module
    (e.g., --module auto-detects, --file-module, --global-module)
