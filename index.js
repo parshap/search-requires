@@ -136,7 +136,7 @@ function createFileStream() {
       }
       callback(null, {
         source: source,
-        sourcePath: path,
+        path: path,
       });
     });
   }, CONCURRENT_READ_LIMIT);
@@ -178,12 +178,12 @@ function createRequire(node, file) {
   var module = node.arguments[0].value;
   return {
     module: module,
-    sourcePath: file.sourcePath,
+    path: file.path,
   };
 }
 
 function resolveRequirePath(req) {
-  var modulePath = path.resolve(path.dirname(req.sourcePath), req.module);
+  var modulePath = path.resolve(path.dirname(req.path), req.module);
   try {
     return require.resolve(modulePath);
   }
@@ -198,11 +198,11 @@ function resolveRequirePath(req) {
 function createRequireNotFoundError(req) {
   var error = new Error(
     "Warning: Module not found " + req.module +
-    " from " + req.sourcePath
+    " from " + req.path
   );
   error.code = "MODULE_NOT_FOUND";
   error.module = req.module;
-  error.sourcePath = req.sourcePath;
+  error.path = req.path;
   return error;
 }
 

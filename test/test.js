@@ -9,7 +9,7 @@ var called = false;
 var finder = find("foo", srcPath);
 var paths = [];
 finder.on("data", function(obj) {
-  paths.push(obj.sourcePath);
+  paths.push(obj.path);
 });
 finder.on("error", function(err) {
   if (err.code === "MODULE_NOT_FOUND" && err.module === "foo") {

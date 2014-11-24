@@ -16,5 +16,5 @@ finder.on("error", function(err) {
   console.error(err.message);
 });
 finder.on("data", function(data) {
-  console.log(data.sourcePath);
+  console.log(data.path);
 });

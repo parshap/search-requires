@@ -69,7 +69,7 @@ used as entry points for the search.
 
 The stream's data objects will have the following properties:
 
- * `sourcePath`: The path of the file with the matching `require()` call
+ * `path`: The path of the file with the matching `require()` call
  * `module`: The name of the module
 
 An `error` event will be fired if an error occurs while searching files.
