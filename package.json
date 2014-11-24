@@ -1,6 +1,6 @@
 {
   "name": "search-requires",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Find where you require() a module",
   "main": "index.js",
   "bin": {
