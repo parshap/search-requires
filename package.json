@@ -7,7 +7,7 @@
     "search-requires": "bin/search-requires.js"
   },
   "scripts": {
-    "test": "node test/test.js"
+    "test": "node test/index.js"
   },
   "repository": {
     "type": "git",
@@ -30,5 +30,8 @@
     "minimist": "^1.1.0",
     "resolve": "^1.0.0",
     "through": "^2.3.4"
+  },
+  "devDependencies": {
+    "tape": "^3.0.3"
   }
 }
