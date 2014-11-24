@@ -1,0 +1,7 @@
+ * Show context around require call (scriptie-talkie?, grep -l option?)
+ * Options to configure `require()` following (--no-follow,
+   --follow-all, --follow-files, --follow-globals)
+ * Option to be silent about MODULE_NOT_FOUND errors
+ * Improve tests
+ * Add option to explicitly search for file module or global module
+   (e.g., --module auto-detects, --file-module, --global-module)

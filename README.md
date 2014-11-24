@@ -66,8 +66,10 @@ var search = require("search-requires");
 Return a stream object and start searching `paths` for require calls
 to `modules`, emitting a data object for each matching call found.
 
-`modules` should be either a module name (e.g, `"some-module"`) or the
-path to a local file (e.g., `"./some-module.js"`).
+`modules` should be a target search module or an array of modules.
+Local file modules (e.g., starts with `"./"`) will be resolved from the
+current working directory, otherwise the module will be treated from a
+named module resolved from `node_modules`.
 
 `entry` should be a path or an array of paths to use as entry points for
 the search. If a path to a directory is used, it will be resolved to a
@@ -76,25 +78,20 @@ directory.
 
 The stream's data objects will have the following properties:
 
- * `path`: The path of the file with the matching `require()` call
- * `module`: The name of the module
+ * `path`: Path to the file with matching `require()` call
+ * `module`: Name of the required module
 
 An `error` event will be fired if an error occurs while searching files.
 
 An `end` event will be fired once all files have been searched.
+
+#### Errors
+
+If a local file module being required is not able to be resolved,
+`err.code` will be `"MODULE_NOT_FOUND"`.
 
 ## Installation
 
 ```
 npm install search-requires
 ```
-
-## Todos
-
- * Show context around require call (scriptie-talkie?, grep -l option?)
- * Options to configure `require()` following (--no-follow,
-   --follow-all, --follow-files, --follow-globals)
- * Option to be silent about MODULE_NOT_FOUND errors
- * Improve tests
- * Add option to explicitly search for file module or global module
-   (e.g., --module auto-detects, --file-module, --global-module)
