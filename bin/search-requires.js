@@ -29,9 +29,12 @@ var moduleToFind = argv.module;
 var entryPaths = argv._;
 
 if (isOptionEmpty(moduleToFind)) {
-  console.error("A target module must be given. Use the -m option.");
-  console.error();
-  readUsage().pipe(process.stderr);
+  var usage = readUsage();
+  usage.pipe(process.stderr);
+  usage.on("end", function() {
+    console.error();
+    console.error("A target module must be given. Use the -m option.");
+  });
   return;
 }
 
