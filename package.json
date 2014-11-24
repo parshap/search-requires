@@ -25,11 +25,11 @@
   },
   "homepage": "https://github.com/parshap/search-requires",
   "dependencies": {
-    "detective": "^3.1.0",
+    "detective": "^4.0.0",
     "map-stream-limit": "^1.1.0",
     "minimist": "^1.1.0",
     "resolve": "^1.0.0",
-    "through": "^2.3.4"
+    "through": "^2.3.6"
   },
   "devDependencies": {
     "tape": "^3.0.3"
