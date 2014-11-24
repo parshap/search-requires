@@ -16,8 +16,12 @@ SYNOPSIS
       search-requires [OPTIONS] [FILE...]
 
 OPTIONS
+
       -m MODULE, --module MODULE
             Search for require() calls to MODULE.
+
+      -h, --help
+            Show this message.
 
 EXAMPLES
       search-requires -m some-module ./a.js
@@ -89,7 +93,6 @@ npm install search-requires
    --follow-all, --follow-files, --follow-globals)
  * Option to be silent about MODULE_NOT_FOUND errors
  * Use local directory if no input file
- * Command line help / usage
  * Improve tests
  * Add option to explicitly search for file module or global module
    (e.g., --module auto-detects, --file-module, --global-module)

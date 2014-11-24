@@ -1,0 +1,13 @@
+SYNOPSIS
+      search-requires [OPTIONS] [FILE...]
+
+OPTIONS
+
+      -m MODULE, --module MODULE
+            Search for require() calls to MODULE.
+
+      -h, --help
+            Show this message.
+
+EXAMPLES
+      search-requires -m some-module ./a.js
