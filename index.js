@@ -14,9 +14,13 @@ var createMapStream = require("map-stream-limit");
 //   Emit data if module matches search
 //   Search module if module is local file
 //
-// ## Streams
+// ### Streams
 //
 // File Path -> File Source -> Require Call -> (Searcher, Emitter)
+//
+
+// ## Search Stream
+//
 
 module.exports = function(modules, files) {
   modules = getSearchModules(modules);
@@ -76,6 +80,12 @@ module.exports = function(modules, files) {
   return retval;
 };
 
+// ### Entry Files
+//
+// Map "named input file" arguments to paths of files to search. Implements
+// logic like mapping directory paths to e.g., index.js.
+//
+
 function getEntryFiles(files) {
   return ensureArray(files)
     .map(resolveEntryFiles)
@@ -85,6 +95,9 @@ function getEntryFiles(files) {
 function resolveEntryFiles(path) {
   return resolve.sync(path, { basedir: process.cwd() });
 }
+
+// ### Search Target Modules
+//
 
 function getSearchModules(modules) {
   return ensureArray(modules)
@@ -108,6 +121,11 @@ function resolveSearchModule(module) {
   }
 }
 
+// ### Module Matching
+//
+// Determine if the given require() call matches the search target module.
+//
+
 function isRequireMatch(req, modules) {
   if (isFileModule(req.module)) {
     var modulePath;
@@ -127,6 +145,11 @@ function shouldFollowRequire(req) {
   return isFileModule(req.module);
 }
 
+// ### File Modules
+//
+// Determines if the given module name is a "file module".
+//
+
 function isFileModule(module) {
   return module.slice(0, 1) === "/" ||
     module.slice(0, 2) === "./" ||
@@ -134,6 +157,7 @@ function isFileModule(module) {
 }
 
 // ## File Stream
+//
 
 var CONCURRENT_READ_LIMIT = 5;
 
@@ -158,6 +182,7 @@ function createFileStream() {
 }
 
 // ## Detective Stream
+//
 
 function createDetectiveStream() {
   return through(function(file) {
@@ -187,7 +212,9 @@ function isLiteralRequire(node) {
 }
 
 // ## Require Object
+//
 // A require object represents a require() call found in a searched file
+//
 
 function createRequire(node, file) {
   var module = node.arguments[0].value;
@@ -222,6 +249,7 @@ function createRequireNotFoundError(req) {
 }
 
 // ## Misc. Helpers
+//
 
 function contains(array, item) {
   return array.indexOf(item) !== -1;
