@@ -1,20 +1,20 @@
 # search-requires
 
-Find where you `require()` a module.
+Find `require()` calls to a given module
 
 ### Command Line Usage
 
 ```
 SYNOPSIS
-      search-requires [OPTIONS] [ENTRY...]
+      search-requires [OPTIONS] [INPUT...]
 
 DESCRIPTION
-      search-requires searches the name ENTRY paths for require() calls
-      matching the target search modules. If an entry path is not given,
-      the path to the current directory will be used.
+      search-requires searches the named INPUT paths for require() calls
+      to modules specified with the -m option. If an input path is not
+      given, the current working directory is used.
 
-      When a require() call is encountered, the path required will also
-      be search if it is a path to a local file module.
+      When a require() call is encountered, the required module will
+      also be searched if it is a path to a local file module.
 
 OPTIONS
 
@@ -61,7 +61,7 @@ finder.on("data", function(obj) {
 var search = require("search-requires");
 ```
 
-### `search(modules, entry)`
+### `search(modules, input)`
 
 Return a stream object and start searching `paths` for require calls
 to `modules`, emitting a data object for each matching call found.
@@ -71,7 +71,7 @@ Local file modules (e.g., starts with `"./"`) will be resolved from the
 current working directory, otherwise the module will be treated from a
 named module resolved from `node_modules`.
 
-`entry` should be a path or an array of paths to use as entry points for
+`input` should be a path or an array of paths to use as entry points for
 the search. If a path to a directory is used, it will be resolved to a
 path using `require.resolve` semantics using the current working
 directory.

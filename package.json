@@ -1,7 +1,7 @@
 {
   "name": "search-requires",
   "version": "2.1.1",
-  "description": "Find where you require() a module",
+  "description": "Find require() calls to a module",
   "main": "index.js",
   "bin": {
     "search-requires": "bin/search-requires.js"
