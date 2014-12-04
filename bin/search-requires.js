@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 "use strict";
 
+var WARNING_ERROR_CODES = [
+  "MODULE_NOT_FOUND",
+  "SYNTAX_ERROR",
+];
+
 function isOptionEmpty(val) {
   return ! val || ! val.length;
 }
@@ -9,6 +14,10 @@ function readUsage() {
   return require("fs").createReadStream(
     require("path").join(__dirname, 'usage.txt')
   );
+}
+
+function includes(arr, value) {
+  return arr.indexOf(value) !== -1;
 }
 
 var find = require("../");
@@ -44,7 +53,13 @@ if (isOptionEmpty(entryPaths)) {
 
 var finder = find(moduleToFind, entryPaths);
 finder.on("error", function(err) {
-  console.error(err.message);
+  if (includes(WARNING_ERROR_CODES, err.code)) {
+    console.error("Warning:", err.message);
+  }
+  else {
+    console.error(err.message);
+    process.exit(1);
+  }
 });
 finder.on("data", function(data) {
   console.log(data.path);

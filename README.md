@@ -88,7 +88,10 @@ An `end` event will be fired once all files have been searched.
 #### Errors
 
 If a local file module being required is not able to be resolved,
-`err.code` will be `"MODULE_NOT_FOUND"`.
+`error.code` will be `"MODULE_NOT_FOUND"`.
+
+If there is an error parsing a module, `error.code` will be
+`"SYNTAX_ERROR"`.
 
 ## Installation
 

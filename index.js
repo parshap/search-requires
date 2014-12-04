@@ -187,12 +187,14 @@ function createFileStream() {
 function createDetectiveStream() {
   return through(function(file) {
     var stream = this;
-    var result = detective.find(file.source, {
-      nodes: true,
-      parse: {
-        loc: true,
-      },
-    });
+    var result;
+    try {
+      result = findRequires(file);
+    }
+    catch (err) {
+      stream.emit("error", err);
+      return;
+    }
     result.nodes.filter(isLiteralRequire).forEach(function(node) {
       var req;
       try {
@@ -205,6 +207,33 @@ function createDetectiveStream() {
       stream.queue(req);
     });
   });
+}
+
+function findRequires(file) {
+  try {
+    return detective.find(file.source, {
+      nodes: true,
+      parse: {
+        loc: true,
+      },
+    });
+  }
+  catch (err) {
+    if (err instanceof SyntaxError) {
+      err.code = "SYNTAX_ERROR";
+      err.message = getSyntaxErrorMessage(err, file);
+    }
+    throw err;
+  }
+}
+
+function getSyntaxErrorMessage(err, file) {
+  return [
+    "Error parsing ",
+    file.path,
+    ", unexpected token at ",
+    "" + err.loc.line + ":" + err.loc.column,
+  ].join("");
 }
 
 function isLiteralRequire(node) {
@@ -239,7 +268,7 @@ function resolveRequirePath(req) {
 
 function createRequireNotFoundError(req) {
   var error = new Error(
-    "Warning: Module not found " + req.module +
+    "Module not found " + req.module +
     " from " + req.path
   );
   error.code = "MODULE_NOT_FOUND";
