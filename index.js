@@ -88,8 +88,16 @@ module.exports = function(modules, files) {
 
 function getEntryFiles(files) {
   return ensureArray(files)
+    .map(ensureFileModule)
     .map(resolveEntryFiles)
     .filter(Boolean);
+}
+
+function ensureFileModule(path) {
+  if ( ! isFileModule(path)) {
+    return "./" + path;
+  }
+  return path;
 }
 
 function resolveEntryFiles(path) {
