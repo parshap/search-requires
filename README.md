@@ -25,8 +25,13 @@ OPTIONS
             Show this message.
 
 EXAMPLES
-      search-requires -m some-module index.js
-      search-requires -m ./lib/fs-util.js -m fs
+      search-requires -m fs -m events
+          Search the current directory for require() calls to the "fs"
+          and "events" modules.
+
+      search-requires -m lib/fs-util.js $(find . -name *.js)
+          Search all js files for require() calls to the local
+          lib/fs-utils.js file.
 ```
 
 See which node core modules use the `stream` module:
