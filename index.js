@@ -141,7 +141,7 @@ function isRequireMatch(req, modules) {
       modulePath = resolveRequirePath(req);
     }
     catch (err) {
-      return false;
+      modulePath = resolveModulePath(req);
     }
     return contains(modules, modulePath);
   }
@@ -262,7 +262,7 @@ function createRequire(node, file) {
 }
 
 function resolveRequirePath(req) {
-  var modulePath = path.resolve(path.dirname(req.path), req.module);
+  var modulePath = resolveModulePath(req);
   try {
     return require.resolve(modulePath);
   }
@@ -270,8 +270,14 @@ function resolveRequirePath(req) {
     if (err.code === "MODULE_NOT_FOUND") {
       throw createRequireNotFoundError(req);
     }
-    throw err;
+    else {
+      throw err;
+    }
   }
+}
+
+function resolveModulePath(req) {
+  return path.resolve(path.dirname(req.path), req.module);
 }
 
 function createRequireNotFoundError(req) {
