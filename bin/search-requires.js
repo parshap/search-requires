@@ -6,8 +6,17 @@ var WARNING_ERROR_CODES = [
   "SYNTAX_ERROR",
 ];
 
+function isEmpty(val) {
+  return ! val || val === true;
+}
+
 function isOptionEmpty(val) {
-  return ! val || ! val.length;
+  if (Array.isArray(val)) {
+    return val.some(isEmpty);
+  }
+  else {
+    return isEmpty(val);
+  }
 }
 
 function readUsage() {
