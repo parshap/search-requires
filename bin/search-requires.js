@@ -33,26 +33,16 @@ var find = require("../");
 var argv = require("minimist")(process.argv.slice(2), {
   alias: {
     module: "m",
-    help: "h",
   },
-  boolean: ["help"],
 });
-
-if (argv.help) {
-  readUsage().pipe(process.stdout);
-  return;
-}
 
 var moduleToFind = argv.module;
 var entryPaths = argv._;
 
 if (isOptionEmpty(moduleToFind)) {
-  var usage = readUsage();
-  usage.pipe(process.stderr);
-  usage.on("end", function() {
-    console.error();
-    console.error("A target module must be given. Use the -m option.");
-  });
+  console.error("Error: A target module must be given. Use the -m option.");
+  console.error();
+  readUsage().pipe(process.stderr);
   return;
 }
 

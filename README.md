@@ -21,9 +21,6 @@ OPTIONS
       -m MODULE, --module MODULE
             Search for require() calls to MODULE.
 
-      -h, --help
-            Show this message.
-
 EXAMPLES
       search-requires -m fs -m events
           Search the current directory for require() calls to the "fs"

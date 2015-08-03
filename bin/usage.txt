@@ -4,6 +4,3 @@ Options:
 
       -m MODULE, --module MODULE
             Search for require() calls to MODULE.
-
-      -h, --help
-            Show this message.
