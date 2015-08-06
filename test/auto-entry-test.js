@@ -7,7 +7,9 @@ var srcDir = __dirname + "/auto-entry";
 var srcPath = srcDir + "/a.js";
 
 test("auto-entry", function(t) {
-  var finder = find(["foo", "bar"], srcDir);
+  var finder = find(["foo", "bar"]);
+  finder.write(srcDir);
+  finder.end();
   var paths = [];
   finder.on("data", function(obj) {
     paths.push(obj);

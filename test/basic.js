@@ -6,15 +6,14 @@ var test = require("tape");
 var srcPath = __dirname + "/basic/a.js";
 
 test("basic", function(t) {
-  var finder = find("foo", srcPath);
+  var finder = find("foo");
+  finder.write(srcPath);
+  finder.end();
   var paths = [];
   finder.on("data", function(obj) {
     paths.push(obj.path);
   });
   finder.on("error", function(err) {
-    if (err.code === "MODULE_NOT_FOUND" && err.module === "foo") {
-      return;
-    }
     t.ifError(err);
   });
   finder.on("end", function() {

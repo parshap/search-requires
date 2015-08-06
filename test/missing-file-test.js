@@ -6,8 +6,10 @@ var test = require("tape");
 var srcPath = __dirname + "/missing-file/a.js";
 var searchPath = __dirname + "/missing-file/b.js";
 
-test("basic", function(t) {
-  var finder = find(searchPath, srcPath);
+test("missing file", function(t) {
+  var finder = find(searchPath);
+  finder.write(srcPath);
+  finder.end();
   var paths = [];
   finder.on("data", function(obj) {
     paths.push(obj.path);

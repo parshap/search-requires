@@ -5,6 +5,8 @@ var resolve = require("resolve");
 var readFile = require("fs").readFile;
 var path = require("path");
 var through = require("through");
+var pumpify = require("pumpify");
+var streamFilter = require("through2-filter");
 var createMapStream = require("map-stream-limit");
 
 // ## Algorithm
@@ -16,40 +18,18 @@ var createMapStream = require("map-stream-limit");
 //
 // ### Streams
 //
-// File Path -> File Source -> Require Call -> (Searcher, Emitter)
+// File Path -> File Source -> Require Call -> Matcher
 //
 
-// ## Search Stream
-//
+module.exports = function(modules) {
+  var fileStream = createFileStream();
+  var detective = createDetectiveStream();
 
-module.exports = function(modules, files) {
-  modules = getSearchModules(modules);
-  files = getEntryFiles(files);
-
-  if ( ! modules.length) {
-    throw new Error("A target search module must be given.");
-  }
-
-  if ( ! files.length) {
-    throw new Error("An entry point file must be given.");
-  }
-
-  var retval = through();
-  var fileStream = retval.fileStream = createFileStream();
-  var detective = retval.detective = createDetectiveStream();
-
-  // Pipe file output to detective
-  fileStream.on("data", detective.write.bind(detective));
-  fileStream.on("end", detective.end.bind(detective));
-
-  // Once we've read all pending files and no more requires have been found,
-  // end the stream
-  fileStream.on("drain", fileStream.end.bind(fileStream));
-
-  // Start searching entry files
-  files.forEach(function(file) {
-    fileStream.write(file);
-  });
+  var retval = pumpify.obj([
+    fileStream,
+    detective,
+    createMatchStream(modules),
+  ]);
 
   // Follow required files
   detective.on("data", function(req) {
@@ -65,20 +45,22 @@ module.exports = function(modules, files) {
     }
   });
 
-  // Emit matching require calls
-  detective.on("data", function(req) {
-    if (isRequireMatch(req, modules)) {
-      retval.queue(req);
-    }
-  });
-
   // Pass along "end" and "error" events
   fileStream.on("error", retval.emit.bind(retval, "error"));
-  detective.on("error", retval.emit.bind(retval, "error"));
-  detective.on("end", retval.queue.bind(retval, null));
 
   return retval;
 };
+
+function createMatchStream(modules) {
+  modules = getSearchModules(modules);
+  if ( ! modules.length) {
+    throw new Error("A target search module must be given.");
+  }
+  return streamFilter.obj(function(req) {
+    return isRequireMatch(req, modules);
+  });
+}
+
 
 // ### Entry Files
 //
@@ -86,11 +68,8 @@ module.exports = function(modules, files) {
 // logic like mapping directory paths to e.g., index.js.
 //
 
-function getEntryFiles(files) {
-  return ensureArray(files)
-    .map(ensureFileModule)
-    .map(resolveEntryFiles)
-    .filter(Boolean);
+function getEntryPath(path) {
+  return resolveEntryFiles(ensureFileModule(path));
 }
 
 function ensureFileModule(path) {
@@ -120,12 +99,14 @@ function resolveSearchModule(module) {
     return path.resolve(process.cwd(), module);
   }
   // If the module is a path to a valid file, resolve the absolute path
-  try {
-    return resolve.sync("./" + module, { basedir: process.cwd() });
-  }
-  // Otherwise, treat it as a global module)
-  catch (err) {
-    return module;
+  else {
+    try {
+      return resolve.sync("./" + module, { basedir: process.cwd() });
+    }
+    // Otherwise, treat it as a global module)
+    catch (err) {
+      return module;
+    }
   }
 }
 
@@ -145,8 +126,9 @@ function isRequireMatch(req, modules) {
     }
     return contains(modules, modulePath);
   }
-
-  return contains(modules, req.module);
+  else {
+    return contains(modules, req.module);
+  }
 }
 
 function shouldFollowRequire(req) {
@@ -172,8 +154,9 @@ var CONCURRENT_READ_LIMIT = 5;
 function createFileStream() {
   var seen = [];
   return createMapStream(function(path, callback) {
+    path = getEntryPath(path);
     // Don't do anything if the path has already been searched
-    if (contains(seen, path)) {
+    if ( ! path || contains(seen, path)) {
       return callback();
     }
     seen.push(path);

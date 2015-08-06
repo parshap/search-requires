@@ -47,10 +47,14 @@ if (isOptionEmpty(moduleToFind)) {
 }
 
 if (isOptionEmpty(entryPaths)) {
-  entryPaths = process.cwd();
+  entryPaths = [process.cwd()];
 }
 
 var finder = find(moduleToFind, entryPaths);
+entryPaths.forEach(function(file) {
+  finder.write(file);
+});
+finder.end();
 finder.on("error", function(err) {
   if (includes(WARNING_ERROR_CODES, err.code)) {
     console.error("Warning:", err.message);
