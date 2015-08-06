@@ -93,9 +93,13 @@ function getSearchModules(modules) {
 }
 
 function resolveSearchModule(module) {
+  // If it is special "*" don't do anything
+  if (module === "*") {
+    return "*";
+  }
   // If it is a file module (e.g., starts with "./"), then resolve the absolute
   // path
-  if (isFileModule(module)) {
+  else if (isFileModule(module)) {
     return path.resolve(process.cwd(), module);
   }
   // If the module is a path to a valid file, resolve the absolute path
@@ -116,7 +120,10 @@ function resolveSearchModule(module) {
 //
 
 function isRequireMatch(req, modules) {
-  if (isFileModule(req.module)) {
+  if (contains(modules, "*")) {
+    return true;
+  }
+  else if (isFileModule(req.module)) {
     var modulePath;
     try {
       modulePath = resolveRequirePath(req);
