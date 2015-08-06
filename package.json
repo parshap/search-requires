@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/parshap/search-requires",
   "dependencies": {
-    "detective": "^4.0.0",
+    "detective": "^4.1.1",
     "map-stream-limit": "^1.1.0",
     "minimist": "^1.1.0",
     "resolve": "^1.0.0",
