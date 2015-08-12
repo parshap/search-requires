@@ -12,7 +12,7 @@ function isEmpty(val) {
 
 function isOptionEmpty(val) {
   if (Array.isArray(val)) {
-    return val.some(isEmpty);
+    return val.every(isEmpty);
   }
   else {
     return isEmpty(val);
