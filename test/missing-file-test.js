@@ -13,14 +13,12 @@ test("basic", function(t) {
     paths.push(obj.path);
   });
   finder.on("error", function(err) {
-    console.log("error", err);
     if (err.code === "MODULE_NOT_FOUND" && err.module === "./b.js") {
       return;
     }
     t.ifError(err);
   });
   finder.on("end", function() {
-    console.log("end", paths);
     t.equal(paths.length, 1);
     t.equal(paths[0], srcPath);
     t.end();
