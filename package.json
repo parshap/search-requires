@@ -7,7 +7,7 @@
     "search-requires": "bin/search-requires.js"
   },
   "scripts": {
-    "test": "node test/index.js"
+    "test": "tape test/*.js"
   },
   "repository": {
     "type": "git",
